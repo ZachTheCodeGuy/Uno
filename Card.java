@@ -55,67 +55,39 @@ public class Card
 			return "Yellow";
 		}
 		if(color==4){
-			return "Red Reverse";
-		}
-		if(color==5){
-			return "Blue Reverse";
-		}
-		if(color==6){
-			return "Green Reverse";
-		}
-		if(color==7){
-			return "Yellow Reverse";
-		}
-		if(color==8)
-		{
-			return "Red +2";
-		}
-		if(color==9)
-		{
-			return "Blue +2";
-		}
-		if(color==10)
-		{
-			return "Green +2";
-		}
-		if(color==11)
-		{
-			return "Yellow +2";
-		}
-		if(color==12){
-			return "Wild";
-		}
-		if(color==13){
-			return "Wild +4";
-		}
-		if(color==14){
-			return "Red Skip";
-		}
-		if(color==15){
-			return "Blue Skip";
-		}
-		if(color==16){
-			return "Green Skip";
-		}
-		if(color==17){
-			return "Yellow Skip";
+			return "";
 		}
 		return null;
 	}
-	public int displayValue()
+	public String displayValue()
 	{
-		return value;
+		if(value>=0 && value <=9){
+			return value+"";
+		}
+		if(value==10){
+			return "reverse";
+		}
+		if(value==11){
+			return "skip";
+		}
+		if(value==12){
+			return "+2";
+		}
+		if(value==13){
+			return "wild +4";
+		}
+		if(value==14){
+			return "wild";
+		}
+		return null;
 	}	
 	public String displayCard()
 	{
-		if(color>=0 && color<=3){
-			return displayColor() + " " + displayValue();
-		}
-		return displayColor() + " Card";
+		return displayColor() + " " + displayValue();
 	}	
 	public boolean setValue(int v)
 	{
-		if(v>=0 && v <=9)
+		if(v>=0 && v <=14)
 		{
 			value=v;
 			return true;
@@ -124,7 +96,7 @@ public class Card
 	}
 	public boolean setColor(int c)
 	{
-		if(c>=0 && c<=12)
+		if(c>=0 && c<=4)
 		{
 			color=c;
 			return true;

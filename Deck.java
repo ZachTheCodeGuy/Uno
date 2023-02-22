@@ -41,6 +41,7 @@ public class Deck
 	{
 		return cards.get(index);
 	}
+
 	public int getValueIndex(int val)//will return the index of the first card with val	
 	{
 		for(int indx=0; indx<cards.size(); indx++)
@@ -78,6 +79,7 @@ public class Deck
 	{
 		return cards.size();
 	}	
+
 	public String displayDeck()
 	{
 		String ret="";
@@ -87,14 +89,16 @@ public class Deck
 		}
 		return ret;
 	}
+
 	public String displayTopCard()
 	{
-		if(cards.get(0).getColor() >= 0 && cards.get(0).getColor() <= 3)
+		if(cards.get(0).getColor() >= 0 && cards.get(0).getColor() <= 4)
 		{
 			return cards.get(0).displayColor() +" "+ cards.get(0).displayValue();
 		}
-		return cards.get(0).displayColor() + " Card";
+		return null;
 	}
+	
 	public void shuffleDeck()
 	{
 		Deck temp=new Deck();

@@ -33,30 +33,32 @@ public class game
 		}
 
 		for(int i=0; i<=1; i++){ //Does this all twice
-			for(int c=4; c<=7; c++){ //Adds reverse cards
-				draw.addCard(new Card(c, false));
+			for(int c=0; c<=3; c++){ //Adds reverse cards
+				draw.addCard(new Card(c, 10));
 			}
 
-			for(int c=8; c<=11; c++){ //Adds +2 cards
-				draw.addCard(new Card(c, false));
+			for(int c=0; c<=3; c++){ //Adds +2 cards
+				draw.addCard(new Card(c, 12));
 			}
 
-			for(int c=14; c<=17; c++){ //Adds skip cards
-				draw.addCard(new Card(c, false));
+			for(int c=0; c<=3; c++){ //Adds skip cards
+				draw.addCard(new Card(c, 11));
 			}
 		}
 		
 		for(int i=0; i<=3; i++){ //Adds wild cards to the deck
-			draw.addCard(new Card(12, false));
+			draw.addCard(new Card(4, 14, false));
 		}
 
 		for(int i=0; i<=3; i++){ //Adds wild +4 cards to the deck
-			draw.addCard(new Card(13, false));
+			draw.addCard(new Card(4, 13, false));
 		}
+
+		System.out.println(draw.getSize());
+		System.out.println(draw.displayDeck());
 		
 		//End build deck---------
 
-		
 
 		draw.shuffleDeck(); //Shuffels draw deck
 				
@@ -102,7 +104,7 @@ public class game
 	}
 
 	private boolean isSpecial(Card card){ //Checks if a player has a wild or wild +4 card
-		if(card.getColor()==12 || card.getColor()==13){
+		if(card.getValue()==13 || card.getValue()==14){
 			return true;
 		}
 		return false;
@@ -123,14 +125,14 @@ public class game
 			return true;
 		}
 		return false;
-	}
+	}	
 
-	private boolean isMatching(Player turn, int i){ //Checks if the value, or color of two cards are matching (also returns true if card in hand is a special)
+	private boolean isMatching(Player turn, int i){
 		if(turn.getHand().getCard(i).getColor()==pile.getCard(0).getColor() && turn.getHand().getCard(i).getColor()<=3 && pile.getCard(0).getColor()<=3) //Compares colors if cards are both standard value cards
 		{
 			return true;
 		} 
-		else if(turn.getHand().getCard(i).getValue()==pile.getCard(0).getValue() && turn.getHand().getCard(i).getColor()<=3 && pile.getCard(0).getColor()<=3) //Compares values if cards are both standard value cards
+		else if(turn.getHand().getCard(i).getValue()==pile.getCard(0).getValue() && turn.getHand().getCard(i).getColor()<=9 && pile.getCard(0).getColor()<=9) //Compares values if cards are both standard value cards
 		{
 			return true;
 		} 
@@ -138,40 +140,9 @@ public class game
 		{
 			return true;
 		} 
-		else if(pile.getCard(0).getColor()==4 || pile.getCard(0).getColor()==8 || pile.getCard(0).getColor()==14) //Says that any form of a red card matches any form of red card
-		{
-			if(turn.getHand().getCard(i).getColor()==1 || turn.getHand().getCard(i).getColor()==4 || turn.getHand().getCard(i).getColor()==8 || turn.getHand().getCard(i).getColor()==14)
-			{
-				return true;
-			}
-		}
-
-		else if(pile.getCard(0).getColor()==5 || pile.getCard(0).getColor()==9 || pile.getCard(0).getColor()==15) //Says that any form of a blue card matches any form of blue card
-		{
-			if(turn.getHand().getCard(i).getColor()==1 || turn.getHand().getCard(i).getColor()==4 || turn.getHand().getCard(i).getColor()==8 || turn.getHand().getCard(i).getColor()==14)
-			{
-				return true;
-			}
-		}
-
-		else if(pile.getCard(0).getColor()==6 || pile.getCard(0).getColor()==10 || pile.getCard(0).getColor()==16) //Says that any form of a green card matches any form of green card
-		{
-			if(turn.getHand().getCard(i).getColor()==1 || turn.getHand().getCard(i).getColor()==4 || turn.getHand().getCard(i).getColor()==8 || turn.getHand().getCard(i).getColor()==14)
-			{
-				return true;
-			}
-		}
-
-		else if(pile.getCard(0).getColor()==7 || pile.getCard(0).getColor()==11 || pile.getCard(0).getColor()==17) //Says that any form of a yellow card matches any form of yellow card
-		{
-			if(turn.getHand().getCard(i).getColor()==1 || turn.getHand().getCard(i).getColor()==4 || turn.getHand().getCard(i).getColor()==8 || turn.getHand().getCard(i).getColor()==14)
-			{
-				return true;
-			}
-		}	
+			
 		return false;
-	}	
-
+	}
 
 	private boolean endGame() //Checks if end condition is met
 	{
@@ -184,8 +155,6 @@ public class game
 		}	 	 
 		return true;
 	}
-	
-	
 
 	private void gameloop()
 	{
@@ -214,7 +183,7 @@ public class game
 				boolean found=false;
 
 				for(int x=0; x<turn.getHand().getSize(); x++){ //Iterates theough the players hand to see if they have a card that matches the top card in the pile
-					if(isMatching(turn, x))
+					if(isMatching(turn, i))
 					{
 						found=true;
 					} 	
@@ -232,66 +201,68 @@ public class game
 						{
 							System.out.println("Sorry, the value you chose is outside the values of your available cards \n"); //Tell them to choose something else
 						} 
-
-						if(pile.getCard(0).getColor()==13){
-							drawCards(4, 0, pile, turn.getHand());
-							System.out.println("Oh no! Thats a +4 card, you drew 4 cards and lost your turn.");
-							break;
-						}
-
-						else if(turn.getHand().getCard(choice-1).getColor()==12 || turn.getHand().getCard(choice-1).getColor()==13){ //Checks if card is wild and does wild card action
-							String ans="";
-							while(true)
+						else
+						{
+							if(turn.getHand().getCard(choice-1).getColor() == pile.getCard(0).getColor())
 							{
-								Scanner ask = new Scanner(System.in);
-								System.out.println("What color would you like to change it to?");
-								ans = ask.nextLine();
-
-								if(isColor(ans)){
-									break;
-								} else{
-									System.out.println("Select a valid color");
+								if(turn.getHand().getCard(choice-1).getColor()<=3 && pile.getCard(0).getColor()<=3)
+								{
+									drawCards(1, choice-1, turn.getHand(), pile);
+									System.out.println("You placed your " + turn.getHand().getCard(choice-1).displayCard() + " into the pile");
 								}
 							}
 
-							drawCards(1, choice-1, turn.getHand(), pile);
-
-							ans=ans.toLowerCase();
-
-							if(ans.equals("red"))
+							if(turn.getHand().getCard(choice-1).getValue() == pile.getCard(0).getValue())
 							{
-								pile.getCard(0).setColor(0);
+								if(turn.getHand().getCard(choice-1).getValue()<=9 && pile.getCard(0).getColor()<=9)
+								{
+									drawCards(1, choice-1, turn.getHand(), pile);
+									System.out.println("You placed your " + turn.getHand().getCard(choice-1).displayCard() + " into the pile");
+								}
 							}
-							
-							if(ans.equals("blue"))
-							{
-								pile.getCard(0).setColor(1);
+	
+							if(turn.getHand().getCard(choice-1).getValue()==14 || turn.getHand().getCard(choice-1).getColor()==13){ //Checks if card is wild and does wild card action
+								String ans="";
+								while(true)
+								{
+									Scanner ask = new Scanner(System.in);
+									System.out.println("What color would you like to change it to?");
+									ans = ask.nextLine();
+	
+									if(isColor(ans)){
+										break;
+									} else{
+										System.out.println("Select a valid color");
+									}
+								}
+	
+								drawCards(1, choice-1, turn.getHand(), pile);
+	
+								ans=ans.toLowerCase();
+	
+								if(ans.equals("red"))
+								{
+									pile.getCard(0).setColor(0);
+								}
+								
+								if(ans.equals("blue"))
+								{
+									pile.getCard(0).setColor(1);
+								}
+								
+								if(ans.equals("green"))
+								{
+									pile.getCard(0).setColor(2);
+								}
+								
+								if(ans.equals("yellow"))
+								{
+									pile.getCard(0).setColor(3);
+								}
+	
+								System.out.println("You changed the color to " + ans.toLowerCase());
+								break;
 							}
-							
-							if(ans.equals("green"))
-							{
-								pile.getCard(0).setColor(2);
-							}
-							
-							if(ans.equals("yellow"))
-							{
-								pile.getCard(0).setColor(3);
-							}
-
-							System.out.println("You changed the color to " + ans.toLowerCase());
-							break;
-						}
-
-						else if(turn.getHand().getCard(choice-1).getColor()==pile.getCard(0).getColor() || turn.getHand().getCard(choice-1).getValue()==pile.getCard(0).getValue()) //If the card is a standard card
-						{
-							System.out.println("You placed your " + turn.getHand().getCard(choice-1).displayCard() + " into the pile!");
-							drawCards(1, choice-1, turn.getHand(), pile);
-							break;
-						} 
-
-						else
-						{
-							System.out.println("Sorry that card doesnt match the top card, another one of your cards does though. Try again \n"); //User chose a card that doesnt match the top card
 						}
 					}
 				}

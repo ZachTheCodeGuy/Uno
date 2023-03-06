@@ -53,9 +53,6 @@ public class game
 		for(int i=0; i<=3; i++){ //Adds wild +4 cards to the deck
 			draw.addCard(new Card(4, 13, false));
 		}
-
-		System.out.println(draw.getSize());
-		System.out.println(draw.displayDeck());
 		
 		//End build deck---------
 
@@ -82,6 +79,10 @@ public class game
 		}
 
 		drawCards(1, 0, draw, pile); //Takes top card from deck and puts it in the pile
+		while(pile.getCard(0).isWild() || pile.getCard(0).isWildP4())
+		{
+			drawCards(1, 0, draw, pile);
+		}
 		gameloop(); //Starts the gameloop
 	}
 
@@ -127,23 +128,6 @@ public class game
 		return false;
 	}	
 
-	private boolean isMatching(Player turn, int i){
-		if(turn.getHand().getCard(i).getColor()==pile.getCard(0).getColor() && turn.getHand().getCard(i).getColor()<=3 && pile.getCard(0).getColor()<=3) //Compares colors if cards are both standard value cards
-		{
-			return true;
-		} 
-		else if(turn.getHand().getCard(i).getValue()==pile.getCard(0).getValue() && turn.getHand().getCard(i).getColor()<=9 && pile.getCard(0).getColor()<=9) //Compares values if cards are both standard value cards
-		{
-			return true;
-		} 
-		else if(isSpecial(turn.getHand().getCard(i))) //Checks if card is a Wild ot Wild +4 because these cards can be placed on anything
-		{
-			return true;
-		} 
-			
-		return false;
-	}
-
 	private boolean endGame() //Checks if end condition is met
 	{
 		for(Player p : players)
@@ -183,45 +167,35 @@ public class game
 				boolean found=false;
 
 				for(int x=0; x<turn.getHand().getSize(); x++){ //Iterates theough the players hand to see if they have a card that matches the top card in the pile
-					if(isMatching(turn, i))
+					if(turn.getHand().getCard(x).isMatching(pile.getCard(0)))
 					{
 						found=true;
 					} 	
 				}
 
 				if(found=true){ //If the player has a matching card, do this
-
 					while(true)
 					{
 						Scanner chooseCard = new Scanner(System.in); //Creats scanner (input)
 						System.out.println("Please select a card to place down"); //Asks player which card they want to place down
 						int choice = chooseCard.nextInt(); //Sets input to a variable
+						choice--;
 
-						if(choice-1>turn.getHand().getSize() || choice<1) //If the input is outside the range of cards that the user has
+						if(choice>=turn.getHand().getSize() || choice<0) //If the input is outside the range of cards that the user has
 						{
 							System.out.println("Sorry, the value you chose is outside the values of your available cards \n"); //Tell them to choose something else
 						} 
+
 						else
 						{
-							if(turn.getHand().getCard(choice-1).getColor() == pile.getCard(0).getColor())
+							if(turn.getHand().getCard(choice).isMatching(pile.getCard(0)))
 							{
-								if(turn.getHand().getCard(choice-1).getColor()<=3 && pile.getCard(0).getColor()<=3)
-								{
-									drawCards(1, choice-1, turn.getHand(), pile);
-									System.out.println("You placed your " + turn.getHand().getCard(choice-1).displayCard() + " into the pile");
-								}
-							}
-
-							if(turn.getHand().getCard(choice-1).getValue() == pile.getCard(0).getValue())
-							{
-								if(turn.getHand().getCard(choice-1).getValue()<=9 && pile.getCard(0).getColor()<=9)
-								{
-									drawCards(1, choice-1, turn.getHand(), pile);
-									System.out.println("You placed your " + turn.getHand().getCard(choice-1).displayCard() + " into the pile");
-								}
+								drawCards(1, choice, turn.getHand(), pile);
+								System.out.println("You placed your " + pile.displayTopCard() + " into the pile");
+								break;
 							}
 	
-							if(turn.getHand().getCard(choice-1).getValue()==14 || turn.getHand().getCard(choice-1).getColor()==13){ //Checks if card is wild and does wild card action
+							if(turn.getHand().getCard(choice).isWild() || turn.getHand().getCard(choice).isWildP4()){ //Checks if card is wild and does wild card action
 								String ans="";
 								while(true)
 								{
@@ -236,7 +210,7 @@ public class game
 									}
 								}
 	
-								drawCards(1, choice-1, turn.getHand(), pile);
+								drawCards(1, choice, turn.getHand(), pile);
 	
 								ans=ans.toLowerCase();
 	
@@ -286,8 +260,3 @@ public class game
 		System.out.println(players.get(winner).getName()+" HAS WON THE GAME!!!");
 	}
 } 
-
-//NOTES FOR NEXT TIME
-//Finish method that checks if the player has a special card
-//Add the method to the code and test, should allow a wild/draw 4 card to be placed no matter what the top card is
-//Add method that allows a player to skip a turn, by typing skip

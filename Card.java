@@ -85,6 +85,41 @@ public class Card
 	{
 		return displayColor() + " " + displayValue();
 	}	
+
+
+
+	public boolean isWild()
+	{
+		return value==14;
+	}
+
+	public boolean isWildP4()
+	{
+		return value==13;
+	}
+
+	public boolean isP2()
+	{
+		return value==12;
+	}
+
+	public boolean isSkip()
+	{
+		return value==11;
+	}
+
+	public boolean isReverse()
+	{
+		return value==10;
+	}
+
+	public boolean isMatching(Card other) //Other should be to top card on the pile
+	{
+		return color == other.getColor() || value == other.getValue() || isWild() || isWildP4();
+	}
+
+
+
 	public boolean setValue(int v)
 	{
 		if(v>=0 && v <=14)

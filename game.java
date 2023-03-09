@@ -78,7 +78,7 @@ public class game
 		}
 
 		drawCards(1, 0, draw, pile); //Takes top card from deck and puts it in the pile
-		while(pile.getCard(0).isWild() || pile.getCard(0).isWildP4())
+		while(pile.getCard(0).isWild() || pile.getCard(0).isWildP4() || pile.getCard(0).isP2())
 		{
 			drawCards(1, 0, draw, pile);
 		}
@@ -144,6 +144,7 @@ public class game
 		//If the player doesnt have the right card, they must take a card form the draw pile
 		//Next players turn begins
 		Player turn;
+		int dir=0;
  		while(!endGame()) //Repeats until end condition is met
 		{
 			for(int i=0;i<numplayers;i++) //Gives every player a turn until the game ends
@@ -160,14 +161,16 @@ public class game
 
 					boolean found=false;
 
-					for(int x=0; x<turn.getHand().getSize(); x++){ //Iterates theough the players hand to see if they have a card that matches the top card in the pile
+					for(int x=0; x<turn.getHand().getSize(); x++) //Iterates theough the players hand to see if they have a card that matches the top card in the pile
+					{
 						if(turn.getHand().getCard(x).isMatching(pile.getCard(0)))
 						{
 							found=true;
 						} 	
 					}
 
-					if(found){ //If the player has a matching card, do this
+					if(found) //If the player has a matching card, do this
+					{
 						while(true)
 						{
 							Scanner chooseCard = new Scanner(System.in); //Creats scanner (input)
@@ -223,6 +226,7 @@ public class game
 								{
 									drawCards(1, choice, turn.getHand(), pile);
 									System.out.println("You placed your " + pile.displayTopCard() + " into the pile");
+									System.out.println(players.get(i+1).getName() + ", your turn was skipped");
 									i++;
 									break;
 								}
@@ -279,3 +283,6 @@ public class game
 		System.out.println(players.get(winner).getName()+" HAS WON THE GAME!!!");
 	}
 } 
+
+//NEXT TIME
+//Implement reverse card functionality

@@ -2,20 +2,19 @@ import java.util.*;
 
 public class game
 {
-	private Deck draw;
-	private Deck pile;
-	private ArrayList <Player> players;
-	private int numplayers;
+	private Deck draw; //Draw deck
+	private Deck pile; //Deck where players put cards on their turn
+	private ArrayList <Player> players; //An array of the players in the came. Initialized when each player enters their name
+	private int numplayers; //Number of players in the gam
 
 	public game()
 	{
 		players=new ArrayList <Player>(); //Creates an array of player objects
-		// build the draw deck.	
 		draw=new Deck(); //Creates the draw deck
-		pile=new Deck(); //Creates the pile
+		pile=new Deck(); //Creates the pile where players place cards
 
 
-		int v=0;
+		int v=0; //Control variable. Some cards in Uno have duplicates, for example there are two red 4s, but only one 0.
 		for(int i=0; i<=1; i++){ //Adds standard cards to the deck twice
 			v=0;
 			if(i==1){ //Uno only has one color set of 0's and two of every other value card, so this stops the algorithm from making another set of 0's
@@ -32,40 +31,39 @@ public class game
 		}
 
 		for(int i=0; i<=1; i++){ //Does this all twice
-			for(int c=0; c<=3; c++){ //Adds reverse cards
+			for(int c=0; c<=3; c++){ //Adds reverse cards to the draw pile
 				draw.addCard(new Card(c, 10));
 			}
 
-			for(int c=0; c<=3; c++){ //Adds +2 cards
+			for(int c=0; c<=3; c++){ //Adds +2 cards to the draw pile
 				draw.addCard(new Card(c, 12));
 			}
 
-			for(int c=0; c<=3; c++){ //Adds skip cards
+			for(int c=0; c<=3; c++){ //Adds skip cards to the draw pile
 				draw.addCard(new Card(c, 11));
 			}
 		}
 		
-		for(int i=0; i<=3; i++){ //Adds wild cards to the deck
+		for(int i=0; i<=3; i++){ //Adds wild cards to the draw pile
 			draw.addCard(new Card(4, 14, false));
 		}
 
-		for(int i=0; i<=3; i++){ //Adds wild +4 cards to the deck
+		for(int i=0; i<=3; i++){ //Adds wild +4 cards to the draw pile
 			draw.addCard(new Card(4, 13, false));
 		}
 		
 		//End build deck---------
 
 
-		draw.shuffleDeck(); //Shuffels draw deck
-				
+		draw.shuffleDeck(); //Shuffels draw deck	
 		numplayers=1;
 				
 		Scanner ans=new Scanner(System.in); //Creates new scanner object
 		System.out.print("     Welcome to Uno!!!!\nHow many people are playing(2-6)?"); //Asks how many people are playing
 		while(true) //Loops code until user enters an excepted value
 		{
-			numplayers=ans.nextInt();			
-			if(numplayers>=2 && numplayers<=6)
+			numplayers=ans.nextInt(); //Sets numplayers to users input of amount of players
+			if(numplayers>=2 && numplayers<=6) //Checks if the value is allowed (based uppon my rules)
 			{
 				for(int pl=0;pl<numplayers;pl++) //Populates player list and performs code within for each
 				{
@@ -78,15 +76,15 @@ public class game
 		}
 
 		drawCards(1, 0, draw, pile); //Takes top card from deck and puts it in the pile
-		while(pile.getCard(0).isWild() || pile.getCard(0).isWildP4() || pile.getCard(0).isP2())
+		while(pile.getCard(0).isWild() || pile.getCard(0).isWildP4() || pile.getCard(0).isP2() || pile.getCard(0).isSkip()) //If the top card is a wild, wild+4, +2, or skip, put another card on top to prevent confusion
 		{
-			drawCards(1, 0, draw, pile);
+			drawCards(1, 0, draw, pile); //Draw another card if the statement is met
 		}
 		gameloop(); //Starts the gameloop
 	}
 
 
-	private boolean drawCards(int num, int indx, Deck from, Deck to) //Removes card at indx from from, and adds is to to at index 0
+	private boolean drawCards(int num, int indx, Deck from, Deck to) //Removes card at indx from "from", and adds it to "to" at index 0
 	{
 		for(int c=0;c<num;c++)
 		{
@@ -104,21 +102,50 @@ public class game
 	}
 
 	private boolean isColor(String c){ //Makes sure the user entered a valid color when asked what color they would like if they placed a wild card
-		c=c.toLowerCase();
+		c=c.toLowerCase(); //Changes user input to all lowercase
 		if(c.equals("red")){
 			return true;
 		}
-		if(c.equals("blue")){
+		else if(c.equals("blue")){
 			return true;
 		}
-		if(c.equals("green")){
+		else if(c.equals("green")){
 			return true;
 		}
-		if(c.equals("yellow")){
+		else if(c.equals("yellow")){
 			return true;
 		}
 		return false;
 	}	
+
+	private void handleWild(Player turn, int choice) //If the player places a wild, this code is executed
+	{
+		Scanner ans = new Scanner(System.in); //New scanner
+		System.out.println("New color: "); //Prompts user to choose a color
+		String x = ans.nextLine(); //Assigns that choice to x
+		while(!isColor(x)){ //While the input doesnt satisfy the isColor method, then execute the following
+			System.out.println("Enter red, blue, green, or yellow:");
+			x = ans.nextLine();
+		}
+
+		//Assigns the top cards color based on input
+		if(x.toLowerCase().equals("red"))
+		{
+			turn.getHand().getCard(choice).setColor(0);
+		}
+		else if(x.toLowerCase().equals("blue"))
+		{
+			turn.getHand().getCard(choice).setColor(1);
+		}
+		else if(x.toLowerCase().equals("green"))
+		{
+			turn.getHand().getCard(choice).setColor(2);
+		}
+		else if(x.toLowerCase().equals("yellow"))
+		{
+			turn.getHand().getCard(choice).setColor(3);
+		}
+	}
 
 	private boolean endGame() //Checks if end condition is met
 	{
@@ -144,18 +171,48 @@ public class game
 		//If the player doesnt have the right card, they must take a card form the draw pile
 		//Next players turn begins
 		Player turn;
-		int dir=0;
+		boolean isReversed=false;
+
  		while(!endGame()) //Repeats until end condition is met
 		{
 			for(int i=0;i<numplayers;i++) //Gives every player a turn until the game ends
 			{
-				turn=players.get(i);
+				if(pile.getCard(0).isReverse()) //If the previous player played a reverse card
+				{
+					//The following toggles the reversing of the iteration
+					if(!isReversed)
+					{
+						isReversed=true;
+					}
+					else
+					{
+						isReversed=false;
+					}
+				}
+
+				if(isReversed==true) //If the iteration has been reversed
+				{
+					if(i>=2) //If the iteration value is greter than 1
+					{
+						i=i-2; //subtract 2 from i which will give the player that comes before the player that just played in the array a turn
+					}
+					else if(i==1) //If i=1
+					{
+						i=numplayers-1; //set i = numplayers-1 (does the same thing as above, but if 2 was subtracted, an index out of bounds error would be thrown)
+					}
+					else if(i==0)
+					{
+						i=numplayers-2; ////set i = numplayers-2 (does the same thing as first if statement, but if 2 was subtracted, an index out of bounds error would be thrown)
+					}
+				}
+
+				turn=players.get(i); //Assigns the turn variable to the current player
 				turn.getHand().sortDeck(); //Sorts the players deck
 
-				System.out.println(" \n \n \n"); //Space in terminal for ease of use
-				System.out.println(turn.getName() + " it's your turn! \n Heres what you have in your hand: \n\n " + turn.getHand().displayDeck()); //Displays hand
-				
-				if(!pile.getCard(0).isP2() && !pile.getCard(0).isWildP4())
+				System.out.println("\n\n"); //some space for readability
+				System.out.println(turn.getName()+ ", heres what you have in your hand: \n\n " + turn.getHand().displayDeck()); //Displays hand
+					
+				if(!pile.getCard(0).isP2() && !pile.getCard(0).isWildP4()) //If the card on top of the pile wont change the format of the play, do this
 				{
 					System.out.println("Match this card: " + pile.displayTopCard()); //Displays the top card in the pile that the player has to match
 
@@ -181,42 +238,18 @@ public class game
 							if(choice>=turn.getHand().getSize() || choice<0) //If the input is outside the range of cards that the user has
 							{
 								System.out.println("Sorry, the value you chose is outside the range of your available cards \n"); //Tell them to choose something else
-							} 
+							}
 
 							else if(!turn.getHand().getCard(choice).isMatching(pile.getCard(0)))
 							{
-								System.out.println("That doesnt match, try again");
+								System.out.println("That doesn't match, try again");
 							}
 
 							else if(turn.getHand().getCard(choice).isMatching(pile.getCard(0)))
 							{
 								if(turn.getHand().getCard(choice).isWild() || turn.getHand().getCard(choice).isWildP4())
 								{
-									Scanner ans = new Scanner(System.in);
-									System.out.println("New color: ");
-									String x = ans.nextLine();
-									while(!isColor(x)){
-										System.out.println("Enter red, blue, green, or yellow:");
-										x = ans.nextLine();
-									}
-
-									if(x.toLowerCase().equals("red"))
-									{
-										turn.getHand().getCard(choice).setColor(0);
-									}
-									else if(x.toLowerCase().equals("blue"))
-									{
-										turn.getHand().getCard(choice).setColor(1);
-									}
-									else if(x.toLowerCase().equals("green"))
-									{
-										turn.getHand().getCard(choice).setColor(2);
-									}
-									else if(x.toLowerCase().equals("yellow"))
-									{
-										turn.getHand().getCard(choice).setColor(3);
-									}
-
+									handleWild(turn, choice);
 									drawCards(1, choice, turn.getHand(), pile);
 									System.out.println("You placed your " + pile.displayTopCard() + " into the pile");
 									break;
@@ -227,7 +260,14 @@ public class game
 									drawCards(1, choice, turn.getHand(), pile);
 									System.out.println("You placed your " + pile.displayTopCard() + " into the pile");
 									System.out.println(players.get(i+1).getName() + ", your turn was skipped");
-									i++;
+									if(i<numplayers-1)
+									{
+										i++;
+									}
+									else
+									{
+										i=0;
+									}
 									break;
 								}
 
@@ -254,6 +294,7 @@ public class game
 						System.out.println("\n \n \n"); //Space for ease of use
 					}	
 				}
+
 				else
 				{
 					System.out.println("The top card was a " + pile.displayTopCard() + " so you drew cards!");
@@ -268,7 +309,7 @@ public class game
 					}
 
 					pile.getCard(0).setValue(0);
-				}		
+				}
 			}
 		}
 		

@@ -2,10 +2,10 @@ import java.util.*;
 
 public class Deck
 {
-	private ArrayList<Card> cards;
+	private ArrayList<Card> cards; //The cards
 	
 	
-	public Deck()	
+	public Deck() //Constructor for a deck
 	{
 		cards=new ArrayList<Card>();		
 	}
@@ -14,7 +14,7 @@ public class Deck
 	{
 		cards.add(c);
 	}
-	public boolean addCard(int pos, Card c)
+	public boolean addCard(int pos, Card c) //Adds card to deck
 	{
 		if(pos>=0 && pos <= cards.size())
 		{

@@ -177,19 +177,6 @@ public class game
 		{
 			for(int i=0;i<numplayers;i++) //Gives every player a turn until the game ends
 			{
-				if(pile.getCard(0).isReverse()) //If the previous player played a reverse card
-				{
-					//The following toggles the reversing of the iteration
-					if(!isReversed)
-					{
-						isReversed=true;
-					}
-					else
-					{
-						isReversed=false;
-					}
-				}
-
 				if(isReversed==true) //If the iteration has been reversed
 				{
 					if(i>=2) //If the iteration value is greter than 1
@@ -259,22 +246,49 @@ public class game
 								{
 									drawCards(1, choice, turn.getHand(), pile);
 									System.out.println("You placed your " + pile.displayTopCard() + " into the pile");
-									System.out.println(players.get(i+1).getName() + ", your turn was skipped");
-									if(i<numplayers-1)
+
+									if(isReversed=false)
 									{
-										i++;
+										System.out.println("\n\n" + players.get(i+1).getName() + ", your turn was skipped");
+										if(i<numplayers-1)
+										{
+											i++;
+										}
+										else if(i==numplayers-1)
+										{
+											i=0;
+										}
+										break;
 									}
 									else
 									{
-										i=0;
+										System.out.println(players.get(i-1).getName() + ", your turn was skipped");
+										if(i>=1)
+										{
+											i--;
+										}
+										else if(i==0)
+										{
+											i=numplayers-1;
+										}
+										break;
 									}
-									break;
 								}
 
 								else if(turn.getHand().getCard(choice).isReverse()) //Code within needs to be replaced
 								{
 									drawCards(1, choice, turn.getHand(), pile);
 									System.out.println("You placed your " + pile.displayTopCard() + " into the pile");
+
+									//The following toggles the reversing of the iteration
+									if(!isReversed)
+									{
+										isReversed=true;
+									}
+									else
+									{
+										isReversed=false;
+									}
 									break;
 								}
 

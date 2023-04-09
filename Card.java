@@ -24,19 +24,19 @@ public class Card
 		value=v;
 		visible=x;
 	}
-	public int getColor()
+	public int getColor() //gets color
 	{
 		return color; 
 	}	
-	public int getValue()
+	public int getValue() //Gets value
 	{
 		return value; 
 	}	
-	public boolean getVisible()
+	public boolean getVisible() //Gets visable
 	{
 		return visible; 
 	}	
-	public String displayColor()
+	public String displayColor() //Displays color
 	{
 		if(color==0)
 		{
@@ -59,7 +59,7 @@ public class Card
 		}
 		return null;
 	}
-	public String displayValue()
+	public String displayValue() //Displays value
 	{
 		if(value>=0 && value <=9){
 			return value+"";
@@ -81,12 +81,11 @@ public class Card
 		}
 		return null;
 	}	
-	public String displayCard()
+
+	public String displayCard() //Displays card
 	{
 		return displayColor() + " " + displayValue();
 	}	
-
-
 
 	public boolean isWild()
 	{
@@ -118,8 +117,6 @@ public class Card
 		return color == other.getColor() || value == other.getValue() || isWild() || isWildP4();
 	}
 
-
-
 	public boolean setValue(int v)
 	{
 		if(v>=0 && v <=14)
@@ -129,6 +126,7 @@ public class Card
 		}
 		return false;	
 	}
+
 	public boolean setColor(int c)
 	{
 		if(c>=0 && c<=4)
@@ -138,11 +136,13 @@ public class Card
 		}
 		return false;		
 	}
+
 	public boolean toggleVisible()
 	{
 		visible = !visible;
 		return visible;
 	}
+	
 	public void setVisible(boolean v)
 	{
 		visible = v;
